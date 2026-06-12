@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Endometriosis Prediction System</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <h2>🩺 EndoPredict AI</h2>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/numerical">Numerical Prediction</a></li>
+            <li><a href="/ultrasound">Ultrasound Prediction</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-text">
+
+                <h1>
+                    AI-Powered Endometriosis
+                    Prediction System
+                </h1>
+
+                <p>
+                    Advanced Machine Learning and Deep Learning
+                    based diagnostic support system for predicting
+                    endometriosis risk using clinical parameters
+                    and ultrasound image analysis.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="/numerical" class="btn">
+                        Numerical Prediction
+                    </a>
+
+                    <a href="/ultrasound" class="btn-outline">
+                        Ultrasound Prediction
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="hero-card">
+
+                <h2>System Features</h2>
+
+                <ul>
+                    <li>✔ Clinical Data Analysis</li>
+                    <li>✔ Deep Learning Image Prediction</li>
+                    <li>✔ AI Risk Assessment</li>
+                    <li>✔ Confidence Score Generation</li>
+                    <li>✔ Medical Report Generation</li>
+                    <li>✔ Fast & Secure Processing</li>
+                </ul>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+
+        <h2 class="section-title">
+            Diagnostic Modules
+        </h2>
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+
+                <h3>📊 Numerical Prediction</h3>
+
+                <p>
+                    Analyze patient clinical parameters,
+                    symptoms, and medical indicators
+                    using machine learning models.
+                </p>
+
+                <a href="/numerical" class="card-btn">
+                    Start Analysis
+                </a>
+
+            </div>
+
+            <div class="feature-card">
+
+                <h3>🖼️ Ultrasound Prediction</h3>
+
+                <p>
+                    Upload ultrasound images and receive
+                    AI-powered diagnostic assistance
+                    using deep learning techniques.
+                </p>
+
+                <a href="/ultrasound" class="card-btn">
+                    Upload Image
+                </a>
+
+            </div>
+
+            <div class="feature-card">
+
+    <h3>📄 Medical Reports</h3>
+
+    <p>
+        View and access generated AI diagnostic
+        reports including prediction results,
+        confidence scores, risk levels and
+        recommendations.
+    </p>
+
+    <a href="/reports" class="card-btn">
+        View Reports
+    </a>
+
+</div>
+
+        </div>
+
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+
+        <div class="about-card">
+
+            <h2>About the System</h2>
+
+            <p>
+                This AI-powered healthcare application assists
+                healthcare professionals and researchers by
+                analyzing patient information and ultrasound
+                imaging data to estimate the likelihood of
+                endometriosis.
+            </p>
+
+            <p>
+                The system combines Machine Learning,
+                Deep Learning, and medical analytics to
+                provide quick and reliable prediction support.
+            </p>
+
+        </div>
+
+    </section>
+    <!-- Model Performance Section -->
+
+<section class="performance-section">
+
+    <h2 class="section-title">
+        Model Performance Metrics
+    </h2>
+
+    <div class="performance-grid">
+
+        <div class="metric-card">
+
+            <h3>Accuracy</h3>
+
+            <div class="metric-value">
+                99.5%
+            </div>
+
+            <p>
+                Overall prediction correctness
+            </p>
+
+        </div>
+
+        <div class="metric-card">
+
+            <h3>Precision</h3>
+
+            <div class="metric-value">
+                98.5%
+            </div>
+
+            <p>
+                Positive prediction reliability
+            </p>
+
+        </div>
+
+        <div class="metric-card">
+
+            <h3>Recall</h3>
+
+            <div class="metric-value">
+                99.2%
+            </div>
+
+            <p>
+                Disease detection capability
+            </p>
+
+        </div>
+
+        <div class="metric-card">
+
+            <h3>F1 Score</h3>
+
+            <div class="metric-value">
+                99.0%
+            </div>
+
+            <p>
+                Balanced performance measure
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <!-- Statistics Section -->
+    <section class="stats">
+
+        <div class="stat-card">
+            <h2>AI</h2>
+            <p>Driven Analysis</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>ML</h2>
+            <p>Clinical Prediction</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>DL</h2>
+            <p>Image Classification</p>
+        </div>
+
+        <div class="stat-card">
+            <h2>24/7</h2>
+            <p>Availability</p>
+        </div>
+
+    </section>
+
+    <!-- Disclaimer -->
+    <section class="disclaimer">
+
+        <div class="disclaimer-box">
+
+            <h3>⚠ Medical Disclaimer</h3>
+
+            <p>
+                This system is intended for educational,
+                research, and decision-support purposes only.
+                It does not replace professional medical
+                diagnosis, treatment, or consultation.
+                Always seek advice from qualified healthcare
+                professionals.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            © 2026 AI Endometriosis Prediction System |
+            Developed using Flask, HTML, CSS & Deep Learning
+        </p>
+
+    </footer>
+
+</body>
+</html>

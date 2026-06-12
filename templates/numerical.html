@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerical Prediction | EndoPredict AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <h2>🩺 EndoPredict AI</h2>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/numerical" class="active">Numerical Prediction</a></li>
+            <li><a href="/ultrasound">Ultrasound Prediction</a></li>
+        </ul>
+
+    </nav>
+
+    <!-- Header -->
+    <section class="page-header">
+
+        <h1>Numerical Endometriosis Prediction</h1>
+
+        <p>
+            Enter patient clinical parameters below to generate
+            an AI-based endometriosis risk assessment.
+        </p>
+
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section">
+
+        <div class="form-card">
+
+            <h2>Patient Clinical Information</h2>
+
+            <form action="/predict_numerical" method="POST">
+
+                <div class="form-grid">
+
+                    <div class="input-group">
+                        <label>Age</label>
+                        <input type="number" name="age" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>BMI</label>
+                        <input type="number" step="0.01" name="bmi" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Menstrual Cycle Length (Days)</label>
+                        <input type="number" name="cycle_length" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Pain Score (0-10)</label>
+                        <input type="number" min="0" max="10" name="pain_score" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Hormone Level</label>
+                        <input type="number" step="0.01" name="hormone_level" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Previous Diagnosis</label>
+                        <select name="previous_diagnosis" required>
+                            <option value="">Select</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Family History</label>
+                        <select name="family_history" required>
+                            <option value="">Select</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Pelvic Pain</label>
+                        <select name="pelvic_pain" required>
+                            <option value="">Select</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Infertility History</label>
+                        <select name="infertility" required>
+                            <option value="">Select</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Fatigue</label>
+                        <select name="fatigue" required>
+                            <option value="">Select</option>
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="button-container">
+
+                    <button type="submit" class="btn">
+                        Generate Prediction
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- Information Section -->
+    <section class="info-section">
+
+        <div class="info-card">
+
+            <h2>Parameters Used For Prediction</h2>
+
+            <ul>
+                <li>Age</li>
+                <li>Body Mass Index (BMI)</li>
+                <li>Menstrual Cycle Characteristics</li>
+                <li>Pain Severity Score</li>
+                <li>Hormonal Indicators</li>
+                <li>Family Medical History</li>
+                <li>Previous Diagnosis Information</li>
+                <li>Pelvic Pain Assessment</li>
+                <li>Infertility History</li>
+                <li>Fatigue Symptoms</li>
+            </ul>
+
+        </div>
+
+    </section>
+
+    <!-- Disclaimer -->
+    <section class="disclaimer">
+
+        <div class="disclaimer-box">
+
+            <h3>⚠ Medical Disclaimer</h3>
+
+            <p>
+                This AI-generated prediction is intended only
+                for educational and research purposes. It does
+                not replace professional medical diagnosis or
+                treatment recommendations.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            © 2026 EndoPredict AI | Numerical Prediction Module
+        </p>
+
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result | EndoPredict AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <h2>🩺 EndoPredict AI</h2>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/numerical">Numerical Prediction</a></li>
+            <li><a href="/ultrasound">Ultrasound Prediction</a></li>
+        </ul>
+
+    </nav>
+
+    <!-- Result Header -->
+    <section class="page-header">
+
+        <h1>Prediction Result</h1>
+
+        <p>
+            AI-generated prediction and medical summary report.
+        </p>
+
+    </section>
+
+    <!-- Result Card -->
+    <section class="result-section">
+
+        <div class="result-card">
+
+            <h2>Prediction Outcome</h2>
+
+            {% if prediction == "Endometriosis" %}
+
+            <div class="prediction-box high-risk">
+
+                <h1>⚠ Endometriosis Detected</h1>
+
+                <p>
+                    The AI model predicts a higher likelihood
+                    of endometriosis.
+                </p>
+
+            </div>
+
+            {% else %}
+
+            <div class="prediction-box low-risk">
+
+                <h1>✅ No Endometriosis Detected</h1>
+
+                <p>
+                    The AI model predicts a lower likelihood
+                    of endometriosis.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+            <div class="confidence-section">
+
+                <h3>Confidence Score</h3>
+
+                <div class="confidence-bar">
+
+                    <div class="confidence-fill"></div>
+
+                </div>
+
+                <p>
+                    <strong>{{ confidence }}%</strong>
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- Uploaded Image Section -->
+    {% if image_path %}
+
+    <section class="image-section">
+
+        <div class="image-card">
+
+            <h2>Uploaded Ultrasound Image</h2>
+
+            <img src="{{ image_path }}"
+                 alt="Uploaded Image"
+                 class="result-image">
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+    <!-- Medical Report -->
+    <section class="report-section">
+
+    <div class="report-card">
+
+        <h1>AI Diagnostic Report</h1>
+
+        <p class="report-subtitle">
+            Artificial Intelligence Assisted Endometriosis Risk Assessment
+        </p>
+
+        <hr>
+
+        <!-- Executive Summary -->
+
+        <h2>Executive Summary</h2>
+
+        <div class="clinical-box">
+
+            {% if prediction == "Endometriosis" %}
+
+            <p>
+                The AI model detected patterns associated with
+                endometriosis. Based on the provided clinical
+                information and image analysis, the patient may
+                require further medical evaluation.
+            </p>
+
+            {% else %}
+
+            <p>
+                The AI model did not identify strong indicators
+                associated with endometriosis. However, continued
+                monitoring and clinical consultation are advised
+                if symptoms persist.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- Patient Information -->
+
+        <h2>Patient Information</h2>
+
+        <table class="report-table">
+
+            {% if patient_data %}
+
+            {% for key, value in patient_data.items() %}
+
+            <tr>
+                <td><strong>{{ key }}</strong></td>
+                <td>{{ value }}</td>
+            </tr>
+
+            {% endfor %}
+
+            {% endif %}
+
+        </table>
+
+        <!-- Prediction Details -->
+
+        <h2>Prediction Details</h2>
+
+        <table class="report-table">
+
+            <tr>
+                <td><strong>Prediction Result</strong></td>
+                <td>{{ prediction }}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Confidence Score</strong></td>
+                <td>{{ confidence }}%</td>
+            </tr>
+
+            <tr>
+                <td><strong>Risk Level</strong></td>
+                <td>{{ risk_level }}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Model Used</strong></td>
+                <td>{{ model_name }}</td>
+            </tr>
+
+            <tr>
+                <td><strong>Analysis Date</strong></td>
+                <td>{{ current_date }}</td>
+            </tr>
+
+        </table>
+
+        <!-- Clinical Interpretation -->
+
+        <h2>Clinical Interpretation</h2>
+
+        <div class="clinical-box">
+
+            {% if confidence >= 80 %}
+
+            <p>
+                The prediction indicates a high probability
+                of endometriosis-related characteristics.
+                Immediate specialist consultation is recommended.
+            </p>
+
+            {% elif confidence >= 50 %}
+
+            <p>
+                The prediction indicates a moderate risk.
+                Additional diagnostic tests and clinical
+                evaluation are recommended.
+            </p>
+
+            {% else %}
+
+            <p>
+                The prediction indicates a relatively low risk.
+                Regular monitoring and symptom assessment
+                are advised.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+        <!-- Follow-up Recommendations -->
+
+        <h2>Follow-up Recommendations</h2>
+
+        <ul class="recommendation-list">
+
+            <li>Schedule consultation with a gynecologist.</li>
+
+            <li>Maintain detailed symptom records.</li>
+
+            <li>Consider further ultrasound evaluation.</li>
+
+            <li>Perform hormonal and laboratory assessments if required.</li>
+
+            <li>Follow physician guidance for long-term management.</li>
+
+        </ul>
+
+        <!-- Disclaimer -->
+
+        <h2>Important Notice</h2>
+
+        <div class="disclaimer-box">
+
+            <p>
+                This report was generated using Artificial
+                Intelligence and Machine Learning models.
+                The results should be used only as a clinical
+                decision-support tool and not as a final
+                medical diagnosis.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+    <!-- Action Buttons -->
+    <section class="action-section">
+
+        <a href="/" class="btn">
+            Back to Dashboard
+        </a>
+
+        <a href="/report"
+   target="_blank"
+   class="btn-secondary">
+   View Medical Report
+</a>
+
+    </section>
+
+    <!-- Disclaimer -->
+    <section class="disclaimer">
+
+        <div class="disclaimer-box">
+
+            <h3>⚠ Medical Disclaimer</h3>
+
+            <p>
+                This report is generated using Artificial
+                Intelligence and is intended only for
+                educational and decision-support purposes.
+                It should not be used as a substitute for
+                professional medical diagnosis, treatment,
+                or consultation.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+
+        <p>
+            © 2026 EndoPredict AI |
+            AI-Assisted Medical Prediction System
+        </p>
+
+    </footer>
+
+</body>
+</html>
