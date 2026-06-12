@@ -10,11 +10,7 @@ app = Flask(__name__)
 
 app.secret_key = "endopredict_secret_key"
 
-UPLOAD_FOLDER = "static/uploads"
 
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 # ==========================
@@ -167,17 +163,10 @@ def predict_ultrasound():
         if image.filename == "":
             return "No image selected"
 
-        file_path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            image.filename
-        )
-
-        image.save(file_path)
-
-        # ==========================
-        # DEMO PREDICTION
-        # Replace with .pth Model
-        # ==========================
+        # =====================================
+        # VERCEL SAFE VERSION
+        # No file saving
+        # =====================================
 
         prediction = "Endometriosis"
         confidence = 92
@@ -189,8 +178,6 @@ def predict_ultrasound():
         else:
             risk_level = "Low Risk"
 
-        image_path = "/" + file_path.replace("\\", "/")
-
         model_name = "EndoPredict AI v1.0"
 
         current_date = datetime.now().strftime("%d-%m-%Y %H:%M")
@@ -198,12 +185,9 @@ def predict_ultrasound():
         report_id = "EPR-" + datetime.now().strftime("%Y%m%d%H%M%S")
 
         patient_data = {
-            "Analysis Type": "Ultrasound Image Analysis"
+            "Analysis Type": "Ultrasound Image Analysis",
+            "Uploaded File": image.filename
         }
-
-        # ==========================
-        # SAVE TO SESSION
-        # ==========================
 
         session["prediction"] = prediction
         session["confidence"] = confidence
@@ -219,14 +203,13 @@ def predict_ultrasound():
             confidence=confidence,
             risk_level=risk_level,
             patient_data=patient_data,
-            image_path=image_path,
+            image_path=None,
             model_name=model_name,
             current_date=current_date
         )
 
     except Exception as e:
         return f"Error: {str(e)}"
-
 
 # ==========================
 # PROFESSIONAL REPORT PAGE
