@@ -3,13 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultrasound Prediction | EndoPredict AI</title>
+    <title>Ultrasound + Clinical Analysis | EndoPredict AI</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        .prediction-container{
+            max-width:1200px;
+            margin:40px auto;
+            padding:20px;
+        }
+
+        .prediction-card{
+            background:#ffffff;
+            border-radius:20px;
+            padding:40px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .page-title{
+            text-align:center;
+            color:#166534;
+            margin-bottom:10px;
+        }
+
+        .page-subtitle{
+            text-align:center;
+            color:#64748b;
+            margin-bottom:40px;
+        }
+
+        .form-section{
+            margin-bottom:35px;
+        }
+
+        .form-section h3{
+            color:#166534;
+            margin-bottom:20px;
+            padding-bottom:10px;
+            border-bottom:2px solid #dcfce7;
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:20px;
+        }
+
+        .form-group{
+            display:flex;
+            flex-direction:column;
+        }
+
+        .form-group label{
+            font-weight:600;
+            color:#374151;
+            margin-bottom:8px;
+        }
+
+        .form-group input,
+        .form-group select{
+            padding:12px;
+            border:1px solid #d1d5db;
+            border-radius:10px;
+            font-size:15px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus{
+            outline:none;
+            border-color:#16a34a;
+        }
+
+        .upload-box{
+            border:2px dashed #16a34a;
+            padding:30px;
+            border-radius:15px;
+            text-align:center;
+            background:#f0fdf4;
+        }
+
+        .upload-box input{
+            margin-top:15px;
+        }
+
+        .submit-btn{
+            width:100%;
+            padding:15px;
+            background:#16a34a;
+            color:white;
+            border:none;
+            border-radius:12px;
+            font-size:18px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .submit-btn:hover{
+            background:#15803d;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
     <!-- Navbar -->
+
     <nav class="navbar">
 
         <div class="logo">
@@ -18,199 +122,170 @@
 
         <ul class="nav-links">
             <li><a href="/">Home</a></li>
-            <li><a href="/numerical">Numerical Prediction</a></li>
-            <li><a href="/ultrasound" class="active">Ultrasound Prediction</a></li>
+            <li><a href="/numerical">Numerical</a></li>
+            <li><a href="/ultrasound" class="active">Ultrasound</a></li>
+            <li><a href="/reports">Reports</a></li>
         </ul>
 
     </nav>
 
-    <!-- Header Section -->
-    <section class="page-header">
+    <div class="prediction-container">
 
-        <h1>Ultrasound Image Analysis</h1>
+        <div class="prediction-card">
 
-        <p>
-            Upload an ultrasound image to receive an
-            AI-powered endometriosis prediction using
-            a trained deep learning model.
-        </p>
+            <h1 class="page-title">
+                Endometriosis Multimodal Prediction
+            </h1>
 
-    </section>
-
-    <!-- Upload Section -->
-    <section class="upload-section">
-
-        <div class="upload-card">
-
-            <h2>Upload Ultrasound Image</h2>
+            <p class="page-subtitle">
+                Upload ultrasound image and clinical parameters
+                for AI-powered endometriosis detection.
+            </p>
 
             <form action="/predict_ultrasound"
                   method="POST"
                   enctype="multipart/form-data">
 
-                <div class="upload-box">
+                <!-- Ultrasound Image -->
 
-                    <h3>📤 Select Image</h3>
+                <div class="form-section">
 
-                    <p>
-                        Supported Formats:
-                        JPG, JPEG, PNG
-                    </p>
+                    <h3>Ultrasound Image</h3>
 
-                    <input type="file"
-                           name="image"
-                           accept=".jpg,.jpeg,.png"
-                           required>
+                    <div class="upload-box">
+
+                        <p>
+                            Upload Ultrasound Image
+                        </p>
+
+                        <input
+                            type="file"
+                            name="image"
+                            accept="image/*"
+                            required>
+
+                    </div>
+
+                </div>
+
+                <!-- Clinical Features -->
+
+                <div class="form-section">
+
+                    <h3>Patient Clinical Information</h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number"
+                                   name="age"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Menstrual Irregularity</label>
+                            <select name="menstrual_irregularity" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Chronic Pain Level</label>
+                            <input type="number"
+                                   name="chronic_pain"
+                                   min="0"
+                                   max="10"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Hormone Level Abnormality</label>
+                            <select name="hormone_abnormality" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Infertility</label>
+                            <select name="infertility" required>
+                                <option value="0">No</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>BMI</label>
+                            <input type="number"
+                                   step="0.1"
+                                   name="bmi"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Height (cm)</label>
+                            <input type="number"
+                                   step="0.1"
+                                   name="height"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Weight (kg)</label>
+                            <input type="number"
+                                   step="0.1"
+                                   name="weight"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Blood Pressure Systolic</label>
+                            <input type="number"
+                                   name="bp_systolic"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Blood Pressure Diastolic</label>
+                            <input type="number"
+                                   name="bp_diastolic"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Estrogen Level</label>
+                            <input type="number"
+                                   step="0.01"
+                                   name="estrogen"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Progesterone Level</label>
+                            <input type="number"
+                                   step="0.01"
+                                   name="progesterone"
+                                   required>
+                        </div>
+
+                    </div>
 
                 </div>
 
-                <div class="button-container">
+                <button type="submit"
+                        class="submit-btn">
 
-                    <button type="submit" class="btn">
-                        Analyze Image
-                    </button>
+                    Analyze with EndoPredict AI
 
-                </div>
+                </button>
 
             </form>
 
         </div>
 
-    </section>
-
-    <!-- Information Section -->
-    <section class="info-section">
-
-        <div class="info-card">
-
-            <h2>Deep Learning Analysis Workflow</h2>
-
-            <div class="workflow">
-
-                <div class="workflow-step">
-                    <h3>1️⃣ Upload</h3>
-                    <p>
-                        Upload an ultrasound image
-                        from the patient examination.
-                    </p>
-                </div>
-
-                <div class="workflow-step">
-                    <h3>2️⃣ Preprocessing</h3>
-                    <p>
-                        The image is resized and
-                        normalized for model input.
-                    </p>
-                </div>
-
-                <div class="workflow-step">
-                    <h3>3️⃣ CNN Analysis</h3>
-                    <p>
-                        The deep learning model
-                        extracts medical features.
-                    </p>
-                </div>
-
-                <div class="workflow-step">
-                    <h3>4️⃣ Prediction</h3>
-                    <p>
-                        The system predicts the
-                        likelihood of endometriosis.
-                    </p>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- Model Information -->
-    <section class="model-section">
-
-        <div class="model-card">
-
-            <h2>AI Model Information</h2>
-
-            <table class="info-table">
-
-                <tr>
-                    <td><strong>Model Type</strong></td>
-                    <td>Convolutional Neural Network (CNN)</td>
-                </tr>
-
-                <tr>
-                    <td><strong>Input</strong></td>
-                    <td>Ultrasound Images</td>
-                </tr>
-
-                <tr>
-                    <td><strong>Output</strong></td>
-                    <td>Risk Classification</td>
-                </tr>
-
-                <tr>
-                    <td><strong>Prediction</strong></td>
-                    <td>Endometriosis / Non-Endometriosis</td>
-                </tr>
-
-                <tr>
-                    <td><strong>Report</strong></td>
-                    <td>Automated Clinical Summary</td>
-                </tr>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    <!-- Important Notes -->
-    <section class="notes-section">
-
-        <div class="notes-card">
-
-            <h2>Important Notes</h2>
-
-            <ul>
-                <li>Upload clear ultrasound images for best results.</li>
-                <li>Supported image formats: JPG, JPEG, PNG.</li>
-                <li>Ensure proper image quality before submission.</li>
-                <li>Predictions are generated using AI-assisted analysis.</li>
-                <li>Medical experts should validate all results.</li>
-            </ul>
-
-        </div>
-
-    </section>
-
-    <!-- Disclaimer -->
-    <section class="disclaimer">
-
-        <div class="disclaimer-box">
-
-            <h3>⚠ Medical Disclaimer</h3>
-
-            <p>
-                This AI system is intended only as a
-                decision-support tool for educational
-                and research purposes. It should not be
-                used as a replacement for professional
-                medical diagnosis or treatment.
-            </p>
-
-        </div>
-
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-
-        <p>
-            © 2026 EndoPredict AI | Ultrasound Prediction Module
-        </p>
-
-    </footer>
+    </div>
 
 </body>
 </html>

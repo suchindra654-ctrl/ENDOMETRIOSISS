@@ -1,8 +1,62 @@
 from flask import Flask, render_template, request, session
-import os
 from datetime import datetime
 
+import torch
+import torch.nn as nn
+from torchvision import transforms, models
+from PIL import Image
+
 app = Flask(__name__)
+device = torch.device("cpu")
+
+class MultiModalModel(nn.Module):
+
+    def __init__(self):
+        super().__init__()
+
+        self.cnn = models.resnet18(weights=None)
+
+        self.cnn.fc = nn.Linear(512, 128)
+
+        self.num_fc = nn.Sequential(
+            nn.Linear(12, 64),
+            nn.ReLU()
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Linear(192, 64),
+            nn.ReLU(),
+            nn.Linear(64, 2)
+        )
+
+    def forward(self, image, numerical):
+
+        img_features = self.cnn(image)
+
+        num_features = self.num_fc(numerical)
+
+        combined = torch.cat(
+            [img_features, num_features],
+            dim=1
+        )
+
+        return self.classifier(combined)
+
+model = MultiModalModel()
+
+model.load_state_dict(
+    torch.load(
+        "models/endometriosis_model.pth",
+        map_location=device
+    )
+)
+
+model.eval()
+
+transform = transforms.Compose([
+    transforms.Resize((128, 128)),
+    transforms.ToTensor()
+])
 
 # ==========================
 # CONFIGURATION
@@ -155,21 +209,68 @@ def predict_ultrasound():
 
     try:
 
-        if "image" not in request.files:
-            return "No image uploaded"
-
         image = request.files["image"]
 
-        if image.filename == "":
-            return "No image selected"
+        image_pil = Image.open(
+            image.stream
+        ).convert("RGB")
 
-        # =====================================
-        # VERCEL SAFE VERSION
-        # No file saving
-        # =====================================
+        image_tensor = transform(
+            image_pil
+        ).unsqueeze(0)
 
-        prediction = "Endometriosis"
-        confidence = 92
+        numerical_features = [
+
+            float(request.form["age"]),
+            float(request.form["menstrual_irregularity"]),
+            float(request.form["chronic_pain"]),
+            float(request.form["hormone_abnormality"]),
+            float(request.form["infertility"]),
+            float(request.form["bmi"]),
+            float(request.form["height"]),
+            float(request.form["weight"]),
+            float(request.form["bp_systolic"]),
+            float(request.form["bp_diastolic"]),
+            float(request.form["estrogen"]),
+            float(request.form["progesterone"])
+
+        ]
+
+        numerical_tensor = torch.tensor(
+            [numerical_features],
+            dtype=torch.float32
+        )
+
+        with torch.no_grad():
+
+            outputs = model(
+                image_tensor,
+                numerical_tensor
+            )
+
+            probabilities = torch.softmax(
+                outputs,
+                dim=1
+            )
+
+            predicted_class = torch.argmax(
+                probabilities,
+                dim=1
+            ).item()
+
+            confidence = round(
+                probabilities[
+                    0,
+                    predicted_class
+                ].item() * 100,
+                2
+            )
+
+        prediction = (
+            "Endometriosis Detected"
+            if predicted_class == 1
+            else "No Endometriosis Detected"
+        )
 
         if confidence >= 80:
             risk_level = "High Risk"
@@ -178,24 +279,57 @@ def predict_ultrasound():
         else:
             risk_level = "Low Risk"
 
-        model_name = "EndoPredict AI v1.0"
+        if risk_level == "High Risk":
 
-        current_date = datetime.now().strftime("%d-%m-%Y %H:%M")
+            recommendations = [
+                "Consult a gynecologist immediately",
+                "Perform MRI evaluation",
+                "Hormonal assessment recommended",
+                "Follow-up within 2 weeks"
+            ]
 
-        report_id = "EPR-" + datetime.now().strftime("%Y%m%d%H%M%S")
+        elif risk_level == "Moderate Risk":
+
+            recommendations = [
+                "Schedule specialist consultation",
+                "Monitor symptoms",
+                "Repeat ultrasound examination",
+                "Maintain symptom diary"
+            ]
+
+        else:
+
+            recommendations = [
+                "Continue regular monitoring",
+                "Maintain healthy lifestyle",
+                "Annual gynecological check-up"
+            ]
 
         patient_data = {
-            "Analysis Type": "Ultrasound Image Analysis",
-            "Uploaded File": image.filename
+            "Age": numerical_features[0],
+            "BMI": numerical_features[5],
+            "Height": numerical_features[6],
+            "Weight": numerical_features[7],
+            "Estrogen": numerical_features[10],
+            "Progesterone": numerical_features[11]
         }
+
+        current_date = datetime.now().strftime(
+            "%d-%m-%Y %H:%M"
+        )
+
+        report_id = "EPR-" + datetime.now().strftime(
+            "%Y%m%d%H%M%S"
+        )
 
         session["prediction"] = prediction
         session["confidence"] = confidence
         session["risk_level"] = risk_level
-        session["model_name"] = model_name
+        session["recommendations"] = recommendations
         session["patient_data"] = patient_data
-        session["current_date"] = current_date
         session["report_id"] = report_id
+        session["current_date"] = current_date
+        session["model_name"] = "EndoPredict AI v1.0"
 
         return render_template(
             "result.html",
@@ -203,14 +337,14 @@ def predict_ultrasound():
             confidence=confidence,
             risk_level=risk_level,
             patient_data=patient_data,
-            image_path=None,
-            model_name=model_name,
-            current_date=current_date
+            recommendations=recommendations,
+            current_date=current_date,
+            model_name="EndoPredict AI v1.0",
+            image_path=None
         )
 
     except Exception as e:
         return f"Error: {str(e)}"
-
 # ==========================
 # PROFESSIONAL REPORT PAGE
 # ==========================
