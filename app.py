@@ -56,7 +56,7 @@ model.load_state_dict(
 model.eval()
 
 transform = transforms.Compose([
-    transforms.Resize((128, 128)),
+    transforms.Resize((64, 64)),
     transforms.ToTensor()
 ])
 
@@ -263,6 +263,7 @@ def predict_numerical():
 # ==========================
 # ULTRASOUND PREDICTION
 # ==========================
+model = MultiModalModel()
 
 @app.route("/predict_ultrasound", methods=["POST"])
 def predict_ultrasound():
