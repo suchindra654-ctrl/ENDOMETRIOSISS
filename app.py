@@ -10,6 +10,8 @@ app = Flask(__name__)
 app.secret_key = "endopredict_secret_key"
 
 device = torch.device("cpu")
+torch.set_num_threads(1)
+torch.set_grad_enabled(False)
 
 class MultiModalModel(nn.Module):
 

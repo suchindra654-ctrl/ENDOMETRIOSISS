@@ -6,11 +6,11 @@ itsdangerous==2.2.0
 click==8.4.1
 blinker==1.9.0
 
-torch
-torchvision
-
-pillow==11.3.0
 numpy==2.3.2
 pandas==2.3.2
+pillow==11.3.0
 
 gunicorn==23.0.0
+
+torch==2.5.1
+torchvision==0.20.1
