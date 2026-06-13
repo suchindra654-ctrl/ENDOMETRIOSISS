@@ -269,7 +269,6 @@ model = MultiModalModel()
 
 @app.route("/predict_ultrasound", methods=["POST"])
 def predict_ultrasound():
-
     try:
 
         print("STEP 1: Route entered")
@@ -324,6 +323,96 @@ def predict_ultrasound():
             )
 
             print("STEP 8: After model inference")
+
+            probabilities = torch.softmax(
+                outputs,
+                dim=1
+            )
+
+            predicted_class = torch.argmax(
+                probabilities,
+                dim=1
+            ).item()
+
+            confidence = round(
+                probabilities[0][predicted_class].item() * 100,
+                2
+            )
+
+        if predicted_class == 1:
+
+            prediction = "Endometriosis Detected"
+
+            if confidence >= 80:
+                risk_level = "High Risk"
+            elif confidence >= 60:
+                risk_level = "Moderate Risk"
+            else:
+                risk_level = "Low Risk"
+
+            recommendations = [
+                "Consult a gynecologist",
+                "Perform MRI evaluation",
+                "Hormonal assessment recommended",
+                "Follow-up recommended"
+            ]
+
+        else:
+
+            prediction = "No Endometriosis Detected"
+
+            risk_level = "Low Risk"
+
+            recommendations = [
+                "Maintain healthy lifestyle",
+                "Routine gynecological checkups",
+                "Monitor symptoms if present"
+            ]
+
+        patient_data = {
+            "Age": numerical_features[0],
+            "BMI": numerical_features[5],
+            "Height": numerical_features[6],
+            "Weight": numerical_features[7],
+            "Estrogen": numerical_features[10],
+            "Progesterone": numerical_features[11]
+        }
+
+        current_date = datetime.now().strftime(
+            "%d-%m-%Y %H:%M"
+        )
+
+        report_id = "EPR-" + datetime.now().strftime(
+            "%Y%m%d%H%M%S"
+        )
+
+        session["prediction"] = prediction
+        session["confidence"] = confidence
+        session["risk_level"] = risk_level
+        session["recommendations"] = recommendations
+        session["patient_data"] = patient_data
+        session["report_id"] = report_id
+        session["current_date"] = current_date
+        session["model_name"] = "EndoPredict AI v1.0"
+
+        return render_template(
+            "result.html",
+            prediction=prediction,
+            confidence=confidence,
+            risk_level=risk_level,
+            patient_data=patient_data,
+            recommendations=recommendations,
+            current_date=current_date,
+            model_name="EndoPredict AI v1.0",
+            image_path=None
+        )
+
+    except Exception as e:
+
+        print(f"ERROR: {e}")
+
+        return f"Error: {str(e)}"
+
 # ==========================
 # PROFESSIONAL REPORT PAGE
 # ==========================
