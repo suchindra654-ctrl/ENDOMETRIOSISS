@@ -272,18 +272,25 @@ def predict_ultrasound():
 
     try:
 
+        print("STEP 1: Route entered")
+
         image = request.files["image"]
+
+        print("STEP 2: Image received")
 
         image_pil = Image.open(
             image.stream
         ).convert("RGB")
 
+        print("STEP 3: Image opened")
+
         image_tensor = transform(
             image_pil
         ).unsqueeze(0)
 
-        numerical_features = [
+        print("STEP 4: Tensor created")
 
+        numerical_features = [
             float(request.form["age"]),
             float(request.form["menstrual_irregularity"]),
             float(request.form["chronic_pain"]),
@@ -296,120 +303,27 @@ def predict_ultrasound():
             float(request.form["bp_diastolic"]),
             float(request.form["estrogen"]),
             float(request.form["progesterone"])
-
         ]
+
+        print("STEP 5: Numerical data ready")
 
         numerical_tensor = torch.tensor(
             [numerical_features],
             dtype=torch.float32
         )
 
+        print("STEP 6: Numerical tensor ready")
+
         with torch.no_grad():
+
+            print("STEP 7: Before model inference")
 
             outputs = model(
                 image_tensor,
                 numerical_tensor
             )
 
-            probabilities = torch.softmax(
-                outputs,
-                dim=1
-            )
-
-            predicted_class = torch.argmax(
-                probabilities,
-                dim=1
-            ).item()
-
-            confidence = round(
-                probabilities[
-                    0,
-                    predicted_class
-                ].item() * 100,
-                2
-            )
-        if predicted_class == 1:
-
-            prediction = "Endometriosis Detected"
-
-            if confidence >= 80:
-                risk_level = "High Risk"
-            elif confidence >= 60:
-                risk_level = "Moderate Risk"
-            else:
-                risk_level = "Low Risk"
-
-            if confidence >= 80:
-
-                recommendations = [
-                    "Consult a gynecologist immediately",
-                    "Perform MRI evaluation",
-                    "Hormonal assessment recommended",
-                    "Follow-up within 2 weeks"
-                ]
-
-            else:
-
-                recommendations = [
-                    "Schedule specialist consultation",
-                    "Repeat ultrasound examination",
-                    "Monitor symptoms carefully"
-                ]
-
-        else:
-
-            prediction = "No Endometriosis Detected"
-
-            risk_level = "No Significant Risk"
-
-            recommendations = [
-                "No significant indicators detected",
-                "Maintain regular health checkups",
-                "Continue healthy lifestyle",
-                "Consult physician if symptoms persist"
-            ]
-                
-
-        patient_data = {
-            "Age": numerical_features[0],
-            "BMI": numerical_features[5],
-            "Height": numerical_features[6],
-            "Weight": numerical_features[7],
-            "Estrogen": numerical_features[10],
-            "Progesterone": numerical_features[11]
-        }
-
-        current_date = datetime.now().strftime(
-            "%d-%m-%Y %H:%M"
-        )
-
-        report_id = "EPR-" + datetime.now().strftime(
-            "%Y%m%d%H%M%S"
-        )
-
-        session["prediction"] = prediction
-        session["confidence"] = confidence
-        session["risk_level"] = risk_level
-        session["recommendations"] = recommendations
-        session["patient_data"] = patient_data
-        session["report_id"] = report_id
-        session["current_date"] = current_date
-        session["model_name"] = "EndoPredict AI v1.0"
-
-        return render_template(
-            "result.html",
-            prediction=prediction,
-            confidence=confidence,
-            risk_level=risk_level,
-            patient_data=patient_data,
-            recommendations=recommendations,
-            current_date=current_date,
-            model_name="EndoPredict AI v1.0",
-            image_path=None
-        )
-
-    except Exception as e:
-        return f"Error: {str(e)}"
+            print("STEP 8: After model inference")
 # ==========================
 # PROFESSIONAL REPORT PAGE
 # ==========================
