@@ -2,14 +2,112 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numerical Prediction | EndoPredict AI</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Clinical Risk Assessment | EndoPredict AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        .form-container{
+            max-width:1200px;
+            margin:40px auto;
+            padding:20px;
+        }
+
+        .form-card{
+            background:#ffffff;
+            border-radius:20px;
+            padding:40px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .page-title{
+            text-align:center;
+            color:#166534;
+            margin-bottom:10px;
+        }
+
+        .page-subtitle{
+            text-align:center;
+            color:#64748b;
+            margin-bottom:35px;
+        }
+
+        .section-title{
+            color:#166534;
+            margin-bottom:20px;
+            border-bottom:2px solid #dcfce7;
+            padding-bottom:10px;
+        }
+
+        .form-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:20px;
+        }
+
+        .form-group{
+            display:flex;
+            flex-direction:column;
+        }
+
+        .form-group label{
+            margin-bottom:8px;
+            font-weight:600;
+            color:#374151;
+        }
+
+        .form-group input,
+        .form-group select{
+            padding:12px;
+            border:1px solid #d1d5db;
+            border-radius:10px;
+            font-size:15px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus{
+            outline:none;
+            border-color:#16a34a;
+        }
+
+        .submit-btn{
+            width:100%;
+            padding:15px;
+            background:#16a34a;
+            color:white;
+            border:none;
+            border-radius:12px;
+            font-size:18px;
+            font-weight:bold;
+            cursor:pointer;
+            margin-top:30px;
+        }
+
+        .submit-btn:hover{
+            background:#15803d;
+        }
+
+        .info-box{
+            background:#f0fdf4;
+            border-left:5px solid #16a34a;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:25px;
+        }
+
+    </style>
+
 </head>
+
 <body>
 
-    <!-- Navbar -->
+    <!-- NAVBAR -->
+
     <nav class="navbar">
 
         <div class="logo">
@@ -18,171 +116,195 @@
 
         <ul class="nav-links">
             <li><a href="/">Home</a></li>
-            <li><a href="/numerical" class="active">Numerical Prediction</a></li>
-            <li><a href="/ultrasound">Ultrasound Prediction</a></li>
+            <li><a href="/numerical" class="active">Clinical Assessment</a></li>
+            <li><a href="/ultrasound">Ultrasound Analysis</a></li>
+            <li><a href="/reports">Reports</a></li>
         </ul>
 
     </nav>
 
-    <!-- Header -->
-    <section class="page-header">
-
-        <h1>Numerical Endometriosis Prediction</h1>
-
-        <p>
-            Enter patient clinical parameters below to generate
-            an AI-based endometriosis risk assessment.
-        </p>
-
-    </section>
-
-    <!-- Form Section -->
-    <section class="form-section">
+    <div class="form-container">
 
         <div class="form-card">
 
-            <h2>Patient Clinical Information</h2>
+            <h1 class="page-title">
+                Clinical Risk Assessment
+            </h1>
 
-            <form action="/predict_numerical" method="POST">
+            <p class="page-subtitle">
+                Enter patient clinical information for
+                endometriosis risk evaluation.
+            </p>
+
+            <div class="info-box">
+
+                <strong>Note:</strong>
+                These are the same clinical parameters used
+                during model training and multimodal analysis.
+
+            </div>
+
+            <form action="/predict_numerical"
+                  method="POST">
+
+                <h2 class="section-title">
+                    Patient Clinical Parameters
+                </h2>
 
                 <div class="form-grid">
 
-                    <div class="input-group">
+                    <!-- AGE -->
+
+                    <div class="form-group">
                         <label>Age</label>
-                        <input type="number" name="age" required>
+                        <input type="number"
+                               name="age"
+                               required>
                     </div>
 
-                    <div class="input-group">
+                    <!-- MENSTRUAL -->
+
+                    <div class="form-group">
+                        <label>Menstrual Irregularity</label>
+
+                        <select name="menstrual_irregularity"
+                                required>
+
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+
+                        </select>
+                    </div>
+
+                    <!-- PAIN -->
+
+                    <div class="form-group">
+                        <label>Chronic Pain Level (0-10)</label>
+
+                        <input type="number"
+                               min="0"
+                               max="10"
+                               name="chronic_pain"
+                               required>
+                    </div>
+
+                    <!-- HORMONE -->
+
+                    <div class="form-group">
+                        <label>Hormone Level Abnormality</label>
+
+                        <select name="hormone_abnormality"
+                                required>
+
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+
+                        </select>
+                    </div>
+
+                    <!-- INFERTILITY -->
+
+                    <div class="form-group">
+                        <label>Infertility</label>
+
+                        <select name="infertility"
+                                required>
+
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+
+                        </select>
+                    </div>
+
+                    <!-- BMI -->
+
+                    <div class="form-group">
                         <label>BMI</label>
-                        <input type="number" step="0.01" name="bmi" required>
+
+                        <input type="number"
+                               step="0.1"
+                               name="bmi"
+                               required>
                     </div>
 
-                    <div class="input-group">
-                        <label>Menstrual Cycle Length (Days)</label>
-                        <input type="number" name="cycle_length" required>
+                    <!-- HEIGHT -->
+
+                    <div class="form-group">
+                        <label>Height (cm)</label>
+
+                        <input type="number"
+                               step="0.1"
+                               name="height"
+                               required>
                     </div>
 
-                    <div class="input-group">
-                        <label>Pain Score (0-10)</label>
-                        <input type="number" min="0" max="10" name="pain_score" required>
+                    <!-- WEIGHT -->
+
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+
+                        <input type="number"
+                               step="0.1"
+                               name="weight"
+                               required>
                     </div>
 
-                    <div class="input-group">
-                        <label>Hormone Level</label>
-                        <input type="number" step="0.01" name="hormone_level" required>
+                    <!-- BP SYS -->
+
+                    <div class="form-group">
+                        <label>Blood Pressure Systolic</label>
+
+                        <input type="number"
+                               name="bp_systolic"
+                               required>
                     </div>
 
-                    <div class="input-group">
-                        <label>Previous Diagnosis</label>
-                        <select name="previous_diagnosis" required>
-                            <option value="">Select</option>
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
+                    <!-- BP DIA -->
+
+                    <div class="form-group">
+                        <label>Blood Pressure Diastolic</label>
+
+                        <input type="number"
+                               name="bp_diastolic"
+                               required>
                     </div>
 
-                    <div class="input-group">
-                        <label>Family History</label>
-                        <select name="family_history" required>
-                            <option value="">Select</option>
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
+                    <!-- ESTROGEN -->
+
+                    <div class="form-group">
+                        <label>Estrogen Level</label>
+
+                        <input type="number"
+                               step="0.01"
+                               name="estrogen"
+                               required>
                     </div>
 
-                    <div class="input-group">
-                        <label>Pelvic Pain</label>
-                        <select name="pelvic_pain" required>
-                            <option value="">Select</option>
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
-                    </div>
+                    <!-- PROGESTERONE -->
 
-                    <div class="input-group">
-                        <label>Infertility History</label>
-                        <select name="infertility" required>
-                            <option value="">Select</option>
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
-                    </div>
+                    <div class="form-group">
+                        <label>Progesterone Level</label>
 
-                    <div class="input-group">
-                        <label>Fatigue</label>
-                        <select name="fatigue" required>
-                            <option value="">Select</option>
-                            <option value="0">No</option>
-                            <option value="1">Yes</option>
-                        </select>
+                        <input type="number"
+                               step="0.01"
+                               name="progesterone"
+                               required>
                     </div>
 
                 </div>
 
-                <div class="button-container">
+                <button type="submit"
+                        class="submit-btn">
 
-                    <button type="submit" class="btn">
-                        Generate Prediction
-                    </button>
+                    Analyze Clinical Risk
 
-                </div>
+                </button>
 
             </form>
 
         </div>
 
-    </section>
-
-    <!-- Information Section -->
-    <section class="info-section">
-
-        <div class="info-card">
-
-            <h2>Parameters Used For Prediction</h2>
-
-            <ul>
-                <li>Age</li>
-                <li>Body Mass Index (BMI)</li>
-                <li>Menstrual Cycle Characteristics</li>
-                <li>Pain Severity Score</li>
-                <li>Hormonal Indicators</li>
-                <li>Family Medical History</li>
-                <li>Previous Diagnosis Information</li>
-                <li>Pelvic Pain Assessment</li>
-                <li>Infertility History</li>
-                <li>Fatigue Symptoms</li>
-            </ul>
-
-        </div>
-
-    </section>
-
-    <!-- Disclaimer -->
-    <section class="disclaimer">
-
-        <div class="disclaimer-box">
-
-            <h3>⚠ Medical Disclaimer</h3>
-
-            <p>
-                This AI-generated prediction is intended only
-                for educational and research purposes. It does
-                not replace professional medical diagnosis or
-                treatment recommendations.
-            </p>
-
-        </div>
-
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-
-        <p>
-            © 2026 EndoPredict AI | Numerical Prediction Module
-        </p>
-
-    </footer>
+    </div>
 
 </body>
 </html>

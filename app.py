@@ -7,6 +7,8 @@ from torchvision import transforms, models
 from PIL import Image
 
 app = Flask(__name__)
+app.secret_key = "endopredict_secret_key"
+
 device = torch.device("cpu")
 
 class MultiModalModel(nn.Module):
@@ -104,74 +106,132 @@ def predict_numerical():
     try:
 
         age = float(request.form["age"])
-        bmi = float(request.form["bmi"])
-        cycle_length = float(request.form["cycle_length"])
-        pain_score = float(request.form["pain_score"])
-        hormone_level = float(request.form["hormone_level"])
-
-        previous_diagnosis = int(request.form["previous_diagnosis"])
-        family_history = int(request.form["family_history"])
-        pelvic_pain = int(request.form["pelvic_pain"])
+        menstrual_irregularity = int(request.form["menstrual_irregularity"])
+        chronic_pain = float(request.form["chronic_pain"])
+        hormone_abnormality = int(request.form["hormone_abnormality"])
         infertility = int(request.form["infertility"])
-        fatigue = int(request.form["fatigue"])
 
-        # ==========================
-        # DEMO RISK CALCULATION
-        # Replace with ML Model
-        # ==========================
+        bmi = float(request.form["bmi"])
+        height = float(request.form["height"])
+        weight = float(request.form["weight"])
+
+        bp_systolic = float(request.form["bp_systolic"])
+        bp_diastolic = float(request.form["bp_diastolic"])
+
+        estrogen = float(request.form["estrogen"])
+        progesterone = float(request.form["progesterone"])
+
+        # =====================================
+        # CLINICAL RISK SCORING
+        # =====================================
 
         score = 0
 
-        if pain_score >= 6:
-            score += 20
+        if menstrual_irregularity == 1:
+            score += 15
 
-        if bmi >= 25:
+        if chronic_pain >= 7:
+            score += 20
+        elif chronic_pain >= 4:
             score += 10
 
-        if family_history == 1:
-            score += 20
-
-        if pelvic_pain == 1:
-            score += 20
+        if hormone_abnormality == 1:
+            score += 15
 
         if infertility == 1:
             score += 15
 
-        if previous_diagnosis == 1:
-            score += 15
+        if bmi >= 30:
+            score += 10
+        elif bmi >= 25:
+            score += 5
+
+        if estrogen > 250:
+            score += 10
+
+        if progesterone < 10:
+            score += 10
+
+        if age >= 35:
+            score += 5
 
         confidence = min(score, 100)
 
-        if confidence >= 80:
-            risk_level = "High Risk"
-        elif confidence >= 50:
-            risk_level = "Moderate Risk"
+        # =====================================
+        # PREDICTION
+        # =====================================
+
+        if confidence >= 60:
+
+            prediction = "Endometriosis Suspected"
+
+            if confidence >= 80:
+                risk_level = "High Risk"
+            else:
+                risk_level = "Moderate Risk"
+
+            recommendations = [
+                "Consult a gynecologist",
+                "Perform detailed ultrasound examination",
+                "Hormonal assessment recommended",
+                "Schedule follow-up evaluation"
+            ]
+
         else:
+
+            prediction = "Low Endometriosis Risk"
+
             risk_level = "Low Risk"
 
-        if confidence >= 50:
-            prediction = "Endometriosis"
-        else:
-            prediction = "No Endometriosis"
+            recommendations = [
+                "Continue routine health monitoring",
+                "Maintain healthy lifestyle",
+                "Seek medical advice if symptoms persist",
+                "Annual gynecological checkup recommended"
+            ]
 
         patient_data = {
             "Age": age,
-            "BMI": bmi,
-            "Cycle Length": cycle_length,
-            "Pain Score": pain_score,
-            "Hormone Level": hormone_level,
-            "Previous Diagnosis": "Yes" if previous_diagnosis else "No",
-            "Family History": "Yes" if family_history else "No",
-            "Pelvic Pain": "Yes" if pelvic_pain else "No",
+            "Menstrual Irregularity": "Yes" if menstrual_irregularity else "No",
+            "Chronic Pain Level": chronic_pain,
+            "Hormone Abnormality": "Yes" if hormone_abnormality else "No",
             "Infertility": "Yes" if infertility else "No",
-            "Fatigue": "Yes" if fatigue else "No"
+            "BMI": bmi,
+            "Height": height,
+            "Weight": weight,
+            "BP Systolic": bp_systolic,
+            "BP Diastolic": bp_diastolic,
+            "Estrogen Level": estrogen,
+            "Progesterone Level": progesterone
         }
-
-        model_name = "EndoPredict AI v1.0"
 
         current_date = datetime.now().strftime("%d-%m-%Y %H:%M")
 
         report_id = "EPR-" + datetime.now().strftime("%Y%m%d%H%M%S")
+
+        session["prediction"] = prediction
+        session["confidence"] = confidence
+        session["risk_level"] = risk_level
+        session["patient_data"] = patient_data
+        session["recommendations"] = recommendations
+        session["report_id"] = report_id
+        session["current_date"] = current_date
+        session["model_name"] = "EndoPredict AI Clinical Assessment"
+
+        return render_template(
+            "result.html",
+            prediction=prediction,
+            confidence=confidence,
+            risk_level=risk_level,
+            patient_data=patient_data,
+            recommendations=recommendations,
+            current_date=current_date,
+            model_name="EndoPredict AI Clinical Assessment",
+            image_path=None
+        )
+
+    except Exception as e:
+        return f"Error: {str(e)}"
 
         # ==========================
         # SAVE TO SESSION
@@ -265,45 +325,47 @@ def predict_ultrasound():
                 ].item() * 100,
                 2
             )
+        if predicted_class == 1:
 
-        prediction = (
-            "Endometriosis Detected"
-            if predicted_class == 1
-            else "No Endometriosis Detected"
-        )
+            prediction = "Endometriosis Detected"
 
-        if confidence >= 80:
-            risk_level = "High Risk"
-        elif confidence >= 50:
-            risk_level = "Moderate Risk"
-        else:
-            risk_level = "Low Risk"
+            if confidence >= 80:
+                risk_level = "High Risk"
+            elif confidence >= 60:
+                risk_level = "Moderate Risk"
+            else:
+                risk_level = "Low Risk"
 
-        if risk_level == "High Risk":
+            if confidence >= 80:
 
-            recommendations = [
-                "Consult a gynecologist immediately",
-                "Perform MRI evaluation",
-                "Hormonal assessment recommended",
-                "Follow-up within 2 weeks"
-            ]
+                recommendations = [
+                    "Consult a gynecologist immediately",
+                    "Perform MRI evaluation",
+                    "Hormonal assessment recommended",
+                    "Follow-up within 2 weeks"
+                ]
 
-        elif risk_level == "Moderate Risk":
+            else:
 
-            recommendations = [
-                "Schedule specialist consultation",
-                "Monitor symptoms",
-                "Repeat ultrasound examination",
-                "Maintain symptom diary"
-            ]
+                recommendations = [
+                    "Schedule specialist consultation",
+                    "Repeat ultrasound examination",
+                    "Monitor symptoms carefully"
+                ]
 
         else:
 
+            prediction = "No Endometriosis Detected"
+
+            risk_level = "No Significant Risk"
+
             recommendations = [
-                "Continue regular monitoring",
-                "Maintain healthy lifestyle",
-                "Annual gynecological check-up"
+                "No significant indicators detected",
+                "Maintain regular health checkups",
+                "Continue healthy lifestyle",
+                "Consult physician if symptoms persist"
             ]
+                
 
         patient_data = {
             "Age": numerical_features[0],
@@ -359,6 +421,7 @@ def report():
         risk_level=session.get("risk_level", "N/A"),
         model_name=session.get("model_name", "EndoPredict AI"),
         patient_data=session.get("patient_data", {}),
+        recommendations=session.get("recommendations", []),
         current_date=session.get(
             "current_date",
             datetime.now().strftime("%d-%m-%Y %H:%M")
